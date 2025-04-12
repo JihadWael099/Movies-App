@@ -1,0 +1,9 @@
+<div class="container my-5">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @for(movie of movies; track movie.imdbID){
+        <div class="col">
+           <app-card [movie]="movie"></app-card>
+        </div>
+        }
+    </div>
+</div>

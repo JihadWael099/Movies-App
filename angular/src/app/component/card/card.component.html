@@ -1,0 +1,14 @@
+<div class="card h-100 shadow p-3 mb-5 bg-body-tertiary rounded">
+    <img [src]="movie.poster" class="card-img-top" alt="product image">
+    <div class="card-body">
+      <h5 class="card-title">{{ movie.title }}</h5>
+      <p class="card-text">{{ movie.actors }}</p>
+      <p class="card-text" [innerHTML]="movie.ratings"></p>
+      <button type="button" class="btn btn-success" (click)="handleDetailsItem(movie.imdbID)">view Details</button>
+      
+      
+      <button *ngIf="userRole === 'ADMIN'" type="button" class="btn btn-warning" (click)="handleDetailsItem(movie.imdbID)">add</button>
+      <button *ngIf="userRole === 'ADMIN'" type="button" class="btn btn-danger" (click)="handleDetailsItem(movie.imdbID)">delete</button>
+    </div>
+  </div>
+  
