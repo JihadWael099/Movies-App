@@ -36,6 +36,8 @@ export class LoginComponent {
       next: (response) => {
         this.isLoading = false;
         console.log('Login success!', response);
+        
+        localStorage.setItem('role', response.role);
         this.router.navigate(['']);
       },
       error: (err) => {

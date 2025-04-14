@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface RatingsRepository extends JpaRepository<Ratings,Integer> {
 
-    List<Ratings> findByMovies(Movies movie);
+    List<Ratings> findByMovie(Movies movie);
 }

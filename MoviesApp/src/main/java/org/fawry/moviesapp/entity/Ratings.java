@@ -1,20 +1,25 @@
 package org.fawry.moviesapp.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 @Entity
-
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
 public class Ratings {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
 
-    @JsonBackReference
+
+    @ManyToOne
     @JoinColumn(name = "movie_id")
-    private Movies movies;
+    private Movies movie;
 
     private Double rating;
 
@@ -27,11 +32,11 @@ public class Ratings {
     }
 
     public Movies getMovies() {
-        return movies;
+        return movie;
     }
 
     public void setMovies(Movies movies) {
-        this.movies = movies;
+        this.movie = movies;
     }
 
     public Double getRating() {

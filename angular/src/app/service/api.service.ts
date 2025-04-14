@@ -7,7 +7,6 @@ import { AuthResponse } from '../model/auth-response';
 import { RegisterDto } from '../model/register-dto';
 import { SearchResponse } from '../model/search-response';
 
-
 const baseUrl = 'http://localhost:8083/api/v1/movies';
 const authUrl = 'http://localhost:8083/auth';
 
@@ -15,32 +14,70 @@ const authUrl = 'http://localhost:8083/auth';
   providedIn: 'root',
 })
 export class ApiService {
+
   constructor(private http: HttpClient) {}
 
+  private transformMovieResponse(movieData: any): Movie {
+    return {
+      title: movieData.Title,
+      year: movieData.Year,
+      rated: movieData.Rated,
+      released: movieData.Released,
+      runtime: movieData.Runtime,
+      genre: movieData.Genre,
+      director: movieData.Director,
+      writer: movieData.Writer,
+      actors: movieData.Actors,
+      plot: movieData.Plot,
+      language: movieData.Language,
+      country: movieData.Country,
+      awards: movieData.Awards,
+      poster: movieData.Poster,
+      ratings: movieData.Ratings || [],
+      metaScore: movieData.Metascore,
+      imdbRating: movieData.imdbRating,
+      imdbVotes: movieData.imdbVotes,
+      type: movieData.Type,
+      dvd: movieData.DVD,
+      boxOffice: movieData.BoxOffice,
+      production: movieData.Production,
+      website: movieData.Website,
+      imdbID: movieData.imdbID
+    };
+  }
 
   isBrowser(): boolean {
     return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
   }
+
   private createHeaders(): HttpHeaders {
     let headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
     if (this.isBrowser()) {
       const token = localStorage.getItem('jwt_token');
-      console.log('Retrieved token from localStorage:', token); 
       if (token) {
-        headers = headers.append('Authorization', `Bearer ${token}`);
+        headers = headers.set('Authorization', `Bearer ${token}`);
       }
     }
-    console.log('Headers:', {
-      'Content-Type': headers.get('Content-Type'),
-      'Authorization': headers.get('Authorization')
-    });
+
     return headers;
   }
+
+  rateMovie(ratingModel: { rating: number, movie: { imdbID: string } }): Observable<any> {
+    const url = 'http://localhost:8083/api/v1/ratings';
+    const headers = this.createHeaders(); 
+  
+    return this.http.post<any>(url, ratingModel, { headers }).pipe(
+      catchError(this.handleError) 
+    );
+  }
+
   login(credentials: LoginDto): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${authUrl}/login`, credentials).pipe(
       map((response) => {
         if (this.isBrowser()) {
           localStorage.setItem('jwt_token', response.token);
+          localStorage.setItem('role', response.role); 
         }
         return response;
       }),
@@ -60,10 +97,12 @@ export class ApiService {
     );
   }
 
-  searchMoviesByTitleExternal(title: string): Observable<SearchResponse> {
-    const url = `${baseUrl}/external/title?title=${title}`;
-
-    return this.http.get<SearchResponse>(url, { headers: this.createHeaders() }).pipe(
+  searchMoviesByTitleExternal(title: string): Observable<Movie> {
+    return this.http.get<Movie>(
+      `${baseUrl}/external/title?title=${title}`,
+      { headers: this.createHeaders() }
+    ).pipe(
+      map(response => this.transformMovieResponse(response)),
       catchError(this.handleError)
     );
   }
@@ -85,6 +124,13 @@ export class ApiService {
   addMovie(movie: Movie): Observable<Movie> {
     const url = `${baseUrl}/add`;
     return this.http.post<Movie>(url, movie, { headers: this.createHeaders() }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  removeMovie(id: string): Observable<any> {
+    const url = `${baseUrl}/${id}`;
+    return this.http.delete<any>(url, { headers: this.createHeaders() }).pipe(
       catchError(this.handleError)
     );
   }

@@ -73,9 +73,9 @@ public class MoviesController {
         Movies response = moviesService.addMovie(movies);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-
     public ResponseEntity<String> deleteMovie(@PathVariable String id) {
         return ResponseEntity.ok( moviesService.deleteMovie(id));
     }

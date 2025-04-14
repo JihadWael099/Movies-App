@@ -1,54 +1,57 @@
 import { Movie } from './../../model/movie';
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 import { ApiService } from '../../service/api.service';
 
 @Component({
   selector: 'app-card',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './card.component.html',
-  styleUrl: './card.component.css'
+  styleUrls: ['./card.component.css']
 })
 export class CardComponent {
-  
-  @Input() movie!:Movie;
+  @Input() movie!: Movie;
+  isAdmin: boolean = false;
+  @Input() fromDatabase: boolean = false; 
+  constructor(private router: Router, private api: ApiService) {}
 
-  userRole: any;
-  constructor(private router:Router, private api:ApiService){
-    this.userRole = this.api.getRole();
+  ngOnInit(): void {
+    const role = localStorage.getItem('role');
+    console.log(role)
+    this.isAdmin = role === 'ADMIN';
   }
 
-  handleDetailsItem(id:string){
-    this.router.navigate(['/movie-details',id]);
+  handleDetailsItem(id: string): void {
+    this.router.navigate(['/movie-details', id]);
   }
 
-  
-
-  
-
-
-  handleAddItem(id: string) {
-    this.api.getMovieByIdExternal(id).subscribe(
-      (movie) => {
-        this.api.addMovie(movie).subscribe(
-          (response) => {
-            console.log('Movie added successfully', response);
-          },
-          (error) => {
-    
-            console.error('Error adding movie', error);
-          }
-        );
+  handleAddItem(movie: Movie): void {
+    this.api.addMovie(movie).subscribe({
+      next: (response) => {
+        console.log('Movie added successfully:', response);
+        alert('Movie added successfully!');
+        this.router.navigate(['']);
       },
-      (error) => {
-        console.error('Error fetching movie details', error);
+      error: (error) => {
+        console.error('Error adding movie', error);
+        alert('Movie is added before');
       }
-    );
-  }
-  handleDeleteItem(id:string){
-    this.router.navigate(['/movie-add',id]);
+    });
   }
 
-
+  handleDeleteItem(id: string): void {
+    this.api.removeMovie(id).subscribe({
+      next: (response) => {
+        console.log('Movie removed successfully:', response);
+        alert('Movie is remove');
+        this.router.navigate(['']);
+      },
+      error: (error) => {
+        console.error('Error removie movie', error);
+      }
+    });
+  }
 }

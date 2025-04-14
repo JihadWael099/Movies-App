@@ -1,17 +1,20 @@
 package org.fawry.moviesapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
 
 import java.util.List;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Movies {
 
     @Id
+    @JsonProperty("id")
     private String id;
     private String title;
     private String year;
@@ -28,9 +31,10 @@ public class Movies {
     private String awards;
     private String poster;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "movies", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<Ratings> ratings;
+
+
     private String metaScore;
     private String imdbRating;
     private String imdbVotes;

@@ -28,6 +28,6 @@ export const routes: Routes = [
       {
         path: 'movies/:title',
         component: CardListComponent,
-        title: 'movie  search'
+        title: 'movie search'
       },
 ];
