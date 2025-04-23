@@ -23,6 +23,9 @@
           <p class="card-text"><strong>Rated:</strong> {{ movie.rated }}</p>
           <p class="card-text"><strong>DVD Release:</strong> {{ movie.dvd }}</p>
           <p class="card-text"><strong>Website:</strong> <a [href]="movie.website" target="_blank">{{ movie.website }}</a></p>
+          
+          <p >Average Rating: {{ avgRating }}</p>
+          
           <button class="btn btn-primary" (click)="openRatingBox()" *ngIf="!isAdmin">Rate Movie</button>
 
           <div *ngIf="showRatingBox" class="rating-box">

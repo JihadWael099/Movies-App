@@ -47,10 +47,15 @@ public class RatingsService {
         if (movie.isEmpty()) {
             throw new NotFoundException("Movie not found");
         }
+
         List<Ratings> ratings = ratingsRepository.findByMovie(movie.get());
         if (ratings.isEmpty()) {
+
             return 0.0;
         }
+
+//        ratings.forEach(rating -> System.out.println("Rating: " + rating.getRating()));
+
         return ratings.stream()
                 .mapToDouble(Ratings::getRating)
                 .average()

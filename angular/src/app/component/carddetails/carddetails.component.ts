@@ -4,6 +4,7 @@ import { Movie } from '../../model/movie';
 import { ApiService } from '../../service/api.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { OmbdService } from '../../service/ombd.service';
 
 @Component({
   selector: 'app-carddetails',
@@ -13,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class CarddetailsComponent {
 
-  constructor(private activeRoute: ActivatedRoute, private apiService: ApiService) { }
+  constructor(private activeRoute: ActivatedRoute, private apiService: ApiService,private ombd: OmbdService) { }
 
   movieId!: string;
   movie!: Movie;
@@ -22,7 +23,7 @@ export class CarddetailsComponent {
   rating: number = 0;
   isAdmin: boolean = false;
   showRatingBox: boolean = false;
-
+  avgRating: number | null = null;
   
   openRatingBox(): void {
     this.showRatingBox = true;
@@ -35,22 +36,24 @@ export class CarddetailsComponent {
 
  
   submitRating(): void {
-    if (this.rating < 1 || this.rating > 5) {
-      alert('Please provide a rating between 1 and 5');
+    if (this.rating < 1 || this.rating >10) {
+      alert('Please provide a rating between 1 and 10');
       return;
     }
 
     const ratingData = {
-      rating: this.rating,
-      movie: {  
-        imdbID: this.movieId,
-      }
+        movies: {
+          imdbID: this.movieId
+        },
+        rating: this.rating 
     };
 
+    
     this.apiService.rateMovie(ratingData).subscribe({
       next: (response) => {
         alert('Rating submitted successfully!');
         this.closeRatingBox();
+        window.location.reload();
       },
       error: (error) => {
         alert('Failed to submit rating. Please try again.');
@@ -60,15 +63,14 @@ export class CarddetailsComponent {
   }
 
   ngOnInit() {
-   
+    
     const role = localStorage.getItem('role');
     console.log(role);
     this.isAdmin = role === 'ADMIN';
     
     this.movieId = this.activeRoute.snapshot.params['id'];
-    
-   
     if (this.movieId!) {
+      this.getAvgRating();
       this.apiService.getMovieByIdInternal(this.movieId).subscribe({
         next: (movie) => {
           this.movie = movie;
@@ -85,4 +87,25 @@ export class CarddetailsComponent {
       this.isLoading = false;
     }
   }
+
+
+
+  getAvgRating(): void {
+    this.apiService.getAvgRating(this.movieId).subscribe({
+      next: (response) => {
+        if (response) {
+          this.avgRating = response;
+          console.log('Average Rating:', this.avgRating);
+        } else {
+          console.error('Invalid response:', response);
+          this.avgRating = null;  // Handle the error case
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching average rating:', error);
+        this.avgRating = null;
+      }
+    });
+  }
+
 }

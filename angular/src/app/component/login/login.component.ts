@@ -38,7 +38,7 @@ export class LoginComponent {
         console.log('Login success!', response);
         
         localStorage.setItem('role', response.role);
-        this.router.navigate(['']);
+        this.router.navigate(['/movies']);
       },
       error: (err) => {
         this.isLoading = false;

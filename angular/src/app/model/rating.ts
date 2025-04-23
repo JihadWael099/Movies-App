@@ -1,7 +1,7 @@
 export interface Rating {
-
-    id: number;
-    rating: number;
-
-
+    movies: {
+        imdbID:string;
+      },
+      rating:number;
+   
 }

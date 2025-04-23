@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/movies")
-@CrossOrigin(origins = "http://localhost:4200")
+
 
 public class MoviesController {
 
@@ -30,22 +30,7 @@ public class MoviesController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/external/title")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<MovieDto> getMoviesByTitleExternal(@RequestParam String title) {
-        MovieDto response = moviesService.getMovieByTitleExternal(title);
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/external/id")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<MovieDto> getMoviesByIdExternal(@RequestParam String id) {
-        MovieDto response = moviesService.getMovieDetailsByIdExternal(id);
-        return ResponseEntity.ok(response);
-    }
-
-
-    @GetMapping("/internal/id")
+    @GetMapping("/id")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Movies> getMoviesByIdInternal(@RequestParam String id) {
         Movies response = moviesService.getMovieDetailsByIdInternal(id);
@@ -53,17 +38,9 @@ public class MoviesController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/internal/search")
+    @GetMapping("/search")
     public ResponseEntity<List<Movies>> getMoviesByTitleInternal(@RequestParam String title) {
         List<Movies> response = moviesService.getMovieByTitleInternal(title);
-        return ResponseEntity.ok(response);
-    }
-
-
-    @GetMapping("/external/search")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<MovieExternalResponse> getMoviesBySearchExternal(@RequestParam String title,@RequestParam int page) {
-        MovieExternalResponse response = moviesService.searchMoviesByTitleAndPageExternal(title,page);
         return ResponseEntity.ok(response);
     }
 
@@ -86,7 +63,6 @@ public class MoviesController {
         List<Movies> addedMovies = moviesService.addMoviesBatch(movies);
         return ResponseEntity.status(HttpStatus.CREATED).body(addedMovies);
     }
-
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/batch-remove")

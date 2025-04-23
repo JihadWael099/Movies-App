@@ -14,9 +14,6 @@ public class Ratings {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
-
-
     @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movies movie;

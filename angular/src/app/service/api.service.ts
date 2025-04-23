@@ -6,6 +6,7 @@ import { LoginDto } from '../model/login-dto';
 import { AuthResponse } from '../model/auth-response';
 import { RegisterDto } from '../model/register-dto';
 import { SearchResponse } from '../model/search-response';
+import { Rating } from '../model/rating';
 
 const baseUrl = 'http://localhost:8083/api/v1/movies';
 const authUrl = 'http://localhost:8083/auth';
@@ -17,34 +18,7 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  private transformMovieResponse(movieData: any): Movie {
-    return {
-      title: movieData.Title,
-      year: movieData.Year,
-      rated: movieData.Rated,
-      released: movieData.Released,
-      runtime: movieData.Runtime,
-      genre: movieData.Genre,
-      director: movieData.Director,
-      writer: movieData.Writer,
-      actors: movieData.Actors,
-      plot: movieData.Plot,
-      language: movieData.Language,
-      country: movieData.Country,
-      awards: movieData.Awards,
-      poster: movieData.Poster,
-      ratings: movieData.Ratings || [],
-      metaScore: movieData.Metascore,
-      imdbRating: movieData.imdbRating,
-      imdbVotes: movieData.imdbVotes,
-      type: movieData.Type,
-      dvd: movieData.DVD,
-      boxOffice: movieData.BoxOffice,
-      production: movieData.Production,
-      website: movieData.Website,
-      imdbID: movieData.imdbID
-    };
-  }
+   
 
   isBrowser(): boolean {
     return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
@@ -63,12 +37,22 @@ export class ApiService {
     return headers;
   }
 
-  rateMovie(ratingModel: { rating: number, movie: { imdbID: string } }): Observable<any> {
+  rateMovie(ratingModel: Rating): Observable<any> {
     const url = 'http://localhost:8083/api/v1/ratings';
     const headers = this.createHeaders(); 
   
-    return this.http.post<any>(url, ratingModel, { headers }).pipe(
-      catchError(this.handleError) 
+    return this.http.post(url, ratingModel, {
+      headers,
+      responseType: 'text' as 'json'
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getAvgRating(movieId: string): Observable<any> {
+    const url = `http://localhost:8083/api/v1/ratings?id=${encodeURIComponent(movieId)}`;
+    return this.http.get<any>(url, { headers: this.createHeaders() }).pipe(
+      catchError(this.handleError)
     );
   }
 
@@ -97,29 +81,16 @@ export class ApiService {
     );
   }
 
-  searchMoviesByTitleExternal(title: string): Observable<Movie> {
-    return this.http.get<Movie>(
-      `${baseUrl}/external/title?title=${title}`,
-      { headers: this.createHeaders() }
-    ).pipe(
-      map(response => this.transformMovieResponse(response)),
-      catchError(this.handleError)
-    );
-  }
+ 
 
   searchMoviesByTitleInternal(title: string): Observable<Movie[]> {
-    const url = `${baseUrl}/internal/search?title=${encodeURIComponent(title)}`;
+    const url = `${baseUrl}/search?title=${encodeURIComponent(title)}`;
     return this.http.get<Movie[]>(url, { headers: this.createHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
-  searchMoviesWithPagination(title: string, page: number): Observable<Movie[]> {
-    const url = `${baseUrl}/external/search?title=${title}&page=${page}`;
-    return this.http.get<Movie[]>(url, { headers: this.createHeaders() }).pipe(
-      catchError(this.handleError)
-    );
-  }
+ 
 
   addMovie(movie: Movie): Observable<Movie> {
     const url = `${baseUrl}/add`;
@@ -128,26 +99,23 @@ export class ApiService {
     );
   }
 
-  removeMovie(id: string): Observable<any> {
+  removeMovie(id: string): Observable<string> {
     const url = `${baseUrl}/${id}`;
-    return this.http.delete<any>(url, { headers: this.createHeaders() }).pipe(
+    return this.http.delete(url, {
+      headers: this.createHeaders(),
+      responseType: 'text'
+    }).pipe(
       catchError(this.handleError)
     );
   }
 
   getMovieByIdInternal(imdbId: string): Observable<Movie> {
-    const url = `${baseUrl}/internal/id?id=${imdbId}`;
+    const url = `${baseUrl}/id?id=${imdbId}`;
     return this.http.get<Movie>(url, { headers: this.createHeaders() }).pipe(
       catchError(this.handleError)
     );
   }
 
-  getMovieByIdExternal(imdbId: string): Observable<Movie> {
-    const url = `${baseUrl}/external/id?id=${imdbId}`;
-    return this.http.get<Movie>(url, { headers: this.createHeaders() }).pipe(
-      catchError(this.handleError)
-    );
-  }
 
   isLoggedIn(): boolean {
     return this.isBrowser() && !!localStorage.getItem('jwt_token');
@@ -185,5 +153,34 @@ export class ApiService {
     }
     
     return throwError(() => new Error(errorMessage));
+  }
+
+  transformMovieResponse(movieData: any): Movie {
+    return {
+      title: movieData.Title,
+      year: movieData.Year,
+      rated: movieData.Rated,
+      released: movieData.Released,
+      runtime: movieData.Runtime,
+      genre: movieData.Genre,
+      director: movieData.Director,
+      writer: movieData.Writer,
+      actors: movieData.Actors,
+      plot: movieData.Plot,
+      language: movieData.Language,
+      country: movieData.Country,
+      awards: movieData.Awards,
+      poster: movieData.Poster,
+      ratings: movieData.Ratings || [],
+      metaScore: movieData.Metascore,
+      imdbRating: movieData.imdbRating,
+      imdbVotes: movieData.imdbVotes,
+      type: movieData.Type,
+      dvd: movieData.DVD,
+      boxOffice: movieData.BoxOffice,
+      production: movieData.Production,
+      website: movieData.Website,
+      imdbID: movieData.imdbID
+    };
   }
 }

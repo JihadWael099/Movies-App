@@ -3,13 +3,14 @@ import { CardListComponent } from './component/card-list/card-list.component';
 import { LoginComponent } from './component/login/login.component';
 import { RegisterComponent } from './component/register/register.component';
 import { CarddetailsComponent } from './component/carddetails/carddetails.component';
+import { HomeComponent } from './component/home/home.component';
+import { NotFoundComponent } from './component/not-found/not-found.component';
 
 export const routes: Routes = [
-    {
-        path: '',
-        component: CardListComponent,
-        title: 'movieApp'
-      },
+
+
+{ path: 'movies', component: CardListComponent}, 
+  { path: '', component: HomeComponent },
       {
         path: 'login',
         component: LoginComponent,
@@ -30,4 +31,12 @@ export const routes: Routes = [
         component: CardListComponent,
         title: 'movie search'
       },
+      {
+        path: 'not-found',
+        component: NotFoundComponent
+      },
+      {
+        path: '**',
+        redirectTo: 'not-found'
+      }
 ];

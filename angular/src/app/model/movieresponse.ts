@@ -1,7 +1,7 @@
 import { RatingResponse } from "./rating-response";
 
 export interface Movieresponse {
-    Title: string;
+  Title: string;
   Year: string;
   Rated: string;
   Released: string;

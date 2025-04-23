@@ -1,7 +1,5 @@
 package org.fawry.moviesapp.Service;
 
-import org.fawry.moviesapp.Exceptions.NotFoundException;
-import org.fawry.moviesapp.entity.User;
 import org.fawry.moviesapp.repository.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,6 +27,6 @@ public class UserService implements UserDetailsService {
                             List.of(authority)
                     );
                 })
-                .orElseThrow(() -> new NotFoundException("User not found with username: " + username));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 }

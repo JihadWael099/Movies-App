@@ -27,7 +27,7 @@
             <a class="nav-link" routerLink="/movies">Movies For User</a>
           </li>
           <li class="nav-item" *ngIf="apiService.hasRole('ADMIN')">
-            <a class="nav-link" routerLink="/admin">Admin Panel</a>
+            <a class="nav-link" routerLink="/movies">Admin Panel</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" (click)="logout()">Logout</a>
@@ -36,14 +36,14 @@
 
       </ul>
 
-      <input 
+      <input  *ngIf="apiService.isLoggedIn()"
         type="text" 
         [formControl]="searchControl"
         (keyup.enter)="search()"
         placeholder="Search books..."
         class="w-full lg:w-72 rounded-full border border-orange bg-transparent py-2 px-4 text-orange placeholder-orange focus:border-orange-400 focus:outline-none focus:ring-1 focus:ring-orange-500 transition"
       />
-      <button (click)="search()" class="absolute right-3 text-orange hover:text-orange-400">
+      <button *ngIf="apiService.isLoggedIn()" (click)="search()" class="absolute right-3 text-orange hover:text-orange-400">
         search
       </button>
     </div>

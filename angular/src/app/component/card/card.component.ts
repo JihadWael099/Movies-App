@@ -25,6 +25,7 @@ export class CardComponent {
   }
 
   handleDetailsItem(id: string): void {
+    console.log(id);
     this.router.navigate(['/movie-details', id]);
   }
 
@@ -33,7 +34,7 @@ export class CardComponent {
       next: (response) => {
         console.log('Movie added successfully:', response);
         alert('Movie added successfully!');
-        this.router.navigate(['']);
+        this.router.navigate(['/movies']);
       },
       error: (error) => {
         console.error('Error adding movie', error);
@@ -46,8 +47,8 @@ export class CardComponent {
     this.api.removeMovie(id).subscribe({
       next: (response) => {
         console.log('Movie removed successfully:', response);
-        alert('Movie is remove');
-        this.router.navigate(['']);
+        // alert('Movie is remove');
+        this.router.navigate(['/movies']);
       },
       error: (error) => {
         console.error('Error removie movie', error);
