@@ -26,7 +26,7 @@ public class AuthService {
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        return jwtUtil.generateToken(user.getName(), user.getRole().withoutPrefix());
+        return jwtUtil.generateToken(user.getName(), user.getRole());
     }
 
     public String loginUser(LoginDto loginDto) {
@@ -35,6 +35,6 @@ public class AuthService {
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
-        return jwtUtil.generateToken(user.getName(), user.getRole().name());
+        return jwtUtil.generateToken(user.getName(), user.getRole());
     }
 }

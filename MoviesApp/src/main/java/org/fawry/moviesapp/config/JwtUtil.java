@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.fawry.moviesapp.utile.Role;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -16,7 +17,7 @@ public class JwtUtil {
     private final SecretKey key = Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
     private static final long JWT_EXPIRATION_MS = 86400000;
 
-    public String generateToken(String username, String role) {
+    public String generateToken(String username, Role role) {
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", role)

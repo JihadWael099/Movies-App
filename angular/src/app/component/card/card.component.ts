@@ -21,7 +21,7 @@ export class CardComponent {
   ngOnInit(): void {
     const role = localStorage.getItem('role');
     console.log(role)
-    this.isAdmin = role === 'ADMIN';
+    this.isAdmin = role === 'ROLE_ADMIN';
   }
 
   handleDetailsItem(id: string): void {

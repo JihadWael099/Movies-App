@@ -26,7 +26,7 @@ export class CardListComponent {
       const searchTerm = params['search'];
   
       if (searchTerm !== undefined) {
-        if (this.apiService.getRole() === 'USER') {
+        if (this.apiService.getRole() === 'ROLE_USER') {
           this.apiService.searchMoviesByTitleInternal(searchTerm).subscribe({
             next: (movies) => {
               this.movies = movies;

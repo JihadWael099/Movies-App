@@ -46,9 +46,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
             String role = jwtUtil.getRoleFromToken(token);
 
-            if (!role.startsWith("ROLE_")) {
-                role = "ROLE_" + role;
-            }
+//            if (!role.startsWith("ROLE_")) {
+//                role = "ROLE_" + role;
+//            }
             if (jwtUtil.validateToken(token)) {
                 if (!jwtUtil.isTokenExpired(token)) {
                     UsernamePasswordAuthenticationToken authentication =
@@ -61,11 +61,9 @@ public class JwtFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 } else {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token has expired");
-                    return;
                 }
             } else {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
-                return;
             }
         }
         filterChain.doFilter(request, response);

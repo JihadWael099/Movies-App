@@ -1,15 +1,19 @@
 import { Router } from '@angular/router';
 import { ApiService } from './../../service/api.service';
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent{
-constructor(private apiService:ApiService,private router: Router){}
- 
+  apiService: ApiService;
+
+  constructor(apiService: ApiService, private router: Router) {
+    this.apiService = apiService;  
+  }
 
 }
